@@ -1,11 +1,59 @@
+:root {
+    --walnut-brown: #5f5449ff;
+    --rose-taupe: #9b6a6cff;
+    --rosy-brown: #b09398ff;
+    --azure-web: #cedfd9ff;
+    --azure-web-2: #ebfcfbff;
+
+    /* Additional colors for text and buttons if needed */
+    --primary-text: var(--walnut-brown);
+    --secondary-text: var(--rose-taupe);
+    --button-background: var(--rose-taupe);
+    --button-hover: var(--walnut-brown);
+    --background-color: var(--azure-web-2);
+    --container-background: var(--azure-web);
+}
+
+
+/* General reset for consistent styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
     font-family: Arial, sans-serif;
-    text-align: center;
+    background-color: var(--background-color);
+    color: car(--primary-text);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
 }
 
 #game {
     margin: 20px auto;
     max-width: 500px;
+}
+
+/* Container for centering content */
+.container {
+    max-width: 800px;
+    width: 100%;
+    padding: 20px;
+    background: var(--container-background);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+/* Header styling */
+h1 {
+    color: var(--rose-taupe);
+    text-align: center;
+    font-size: 2em;
+    margin-bottom: 20px;
 }
 
 #map-image {
@@ -15,14 +63,90 @@ body {
     margin-bottom: 20px;
 }
 
-input {
-    margin: 5px;
+/* Form input styling */
+input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid var(--rosy-brown);
+    border-radius: 4px;
+    font-size: 1em;
+    background-color: var(--azure-web);
+    color: var(--primary-text);
 }
 
 button {
-    margin: 10px;
+    background-color: var(--button-background);
+    color: white;
     padding: 10px 20px;
-    font-size: 16px;
+    font-size: 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: var(--button-hover);
+}
+
+nav {
+    background-color: var(--walnut-brown);
+    padding: 10px;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 20px;
+    border-radius: 8px;
+}
+
+nav a {
+    color: var(--azure-web-2);
+    text-decoration: none;
+    margin: 0 15px;
+    font-weight: bold;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+/* Flash messages styling */
+.flash-messages {
+    list-style-type: none;
+    color: var(--rose-taupe);
+    padding: 10px;
+    background-color: var(--rosy-brown);
+    border: 1px solid var(--rose-taupe);
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+/* Table styling for Leaderboard */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table, th, td {
+    border: 1px solid var(--rose-taupe);
+}
+
+th {
+    background-color: var(--walnut-brown);
+    color: var(--azure-web-2);
+}
+
+td {
+    background-color: var(--container-background);
+    color: var(--primary-text);
+    padding: 12px;
+    text-align: center;
+}
+
+tr:nth-child(even) {
+    background-color: var(--azure-web);
 }
 
 /* Specific style for reset button */

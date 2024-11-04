@@ -3,6 +3,7 @@
 {% block title %}Register - Game Guesser{% endblock %}
 
 {% block content %}
+<div class="container">
     <h1>Register</h1>
     <form action="{{ url_for('register') }}" method="post">
         <div>
@@ -16,4 +17,5 @@
         <button type="submit">Register</button>
     </form>
     <p>Already have an account? <a href="{{ url_for('login') }}">Login here</a>.</p>
+</div>
 {% endblock %}

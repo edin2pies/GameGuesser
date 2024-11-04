@@ -1,7 +1,6 @@
 # app.py
 
 from flask import Flask, render_template, jsonify, request, session, redirect, url_for, send_from_directory, flash
-import sqlite3
 import random
 import mysql.connector
 from datetime import datetime

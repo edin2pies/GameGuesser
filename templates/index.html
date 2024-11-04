@@ -1,9 +1,10 @@
 {% extends "base.html" %}
 
-{% block title %}Video Game GeoGuesser{% endblock %}
+{% block title %}Game GeoGuesser{% endblock %}
 
 {% block content %}
-    <h1>Video Game GeoGuesser</h1>
+<div class="container">
+    <h1>Game GeoGuesser</h1>
     <div id="game">
         <img id="map-image" src="" alt="Map" />
         <div>
@@ -15,4 +16,5 @@
         <p id="feedback"></p>
         <button onclick="resetGame()">Reset Game</button>
     </div>
+</div>
 {% endblock %}
