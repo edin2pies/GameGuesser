@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Video Game GeoGuesser{% endblock %}
+
+{% block content %}
+    <h1>Video Game GeoGuesser</h1>
+    <div id="game">
+        <img id="map-image" src="" alt="Map" />
+        <div>
+            <input type="text" id="game-name" placeholder="Guess the game name" />
+            <input type="text" id="map-name" placeholder="Guess the map name" />
+            <button onclick="submitGuess()">Submit Guess</button>
+        </div>
+        <p id="timer"></p>
+        <p id="feedback"></p>
+        <button onclick="resetGame()">Reset Game</button>
+    </div>
+{% endblock %}

@@ -1,0 +1,38 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+#game {
+    margin: 20px auto;
+    max-width: 500px;
+}
+
+#map-image {
+    width: 100%;
+    height: auto;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+}
+
+input {
+    margin: 5px;
+}
+
+button {
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+}
+
+/* Specific style for reset button */
+#game button:last-of-type {
+    background-color: #ff6666;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+#game button:last-of-type:hover {
+    background-color: #ff3333;
+}
