@@ -51,6 +51,23 @@ body {
     margin-bottom: 20px;
 }
 
+.progress-container {
+    width: 100%;
+    height: 5px;
+    background-color: var(--hookers-green); /* Light background for the empty bar */
+    border-radius: 5px;
+    overflow: hidden;
+    margin: 20px 0;
+}
+
+/* Progress bar itself */
+.progress-bar {
+    height: 100%;
+    background-color: #9395D3; /* Color of the progress (purple) */
+    width: 100%; /* Starts full, but will be adjusted with JavaScript */
+    transition: width 1s linear; /* Smooth transition for the countdown */
+}
+
 /* Header styling */
 h1 {
     color: var(--accent-color);

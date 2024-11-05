@@ -1,29 +1,66 @@
+// Global variables
 const maxTime = 120; // 2 minutes (120 seconds)
 let timeLeft;
 let basePoints = 100;
-const timerDisplay = document.getElementById('time-display');
-const progressRing = document.querySelector('.progress-ring');
-const circumference = 2 * Math.PI * 45; // Circle radius of 45
-progressRing.style.strokeDasharray = circumference;
+let timer; // Timer interval variable, accessible to all functions
+let progressBar, mapImage;
 
-// Load a new image when the page loads
-document.addEventListener("DOMContentLoaded", loadImage);
+// Define the resetGame function in the global scope
+function resetGame() {
+    console.log("Reset Game function called");
 
-function updateTimerDisplay() {
-    // Format time as MM:SS
-    const minutes = Math.floor(timeLeft / 60);
-    const seconds = timeLeft % 60;
-    timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    clearInterval(timer); // Stop the timer
+    timeLeft = maxTime; // Reset the time left to maximum
+    progressBar.style.width = '100%'; // Reset the progress bar to full width
+
+    fetch("/reset_game", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("Reset response:", data); // Log response to verify
+
+        // Clear any "Game Over" messages and prepare for a new game
+        const gameContainer = document.getElementById("game");
+        gameContainer.innerHTML = `
+            <img id="map-image" src="" alt="Map" style="max-width:100%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);" />
+            <div>
+                <input type="text" id="game-name" placeholder="Guess the game name" />
+                <input type="text" id="map-name" placeholder="Guess the map name" />
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar" style="width: 100%;"></div>
+            </div>
+            <div class="button-container">
+                <button onclick="submitGuess()">Submit Guess</button>
+                <button onclick="resetGame()">Reset Game</button>
+            </div>
+            <p id="feedback"></p>
+        `;
+
+        // Reinitialize DOM elements
+        mapImage = document.getElementById("map-image");
+        progressBar = document.getElementById("progress-bar");
+
+        // Load the first image for the new game
+        loadImage();
+    })
+    .catch(error => console.error("Error resetting game:", error));
 }
 
-function setProgress(value) {
-    // Calculate stroke-dashoffset based on remaining time
-    const offset = circumference - (value / maxTime) * circumference;
-    progressRing.style.strokeDashoffset = offset;
-}
+// Attach resetGame to the global window object
+window.resetGame = resetGame;
 
-// Function to load a new random image
+// Define loadImage, startTimer, and submitGuess in the global scope
 function loadImage() {
+    if (!mapImage) {
+        console.error("Element with ID 'map-image' not found.");
+        return;
+    }
+
     fetch("/get_image")
         .then(response => response.json())
         .then(data => {
@@ -32,11 +69,10 @@ function loadImage() {
                     <h2>Game Over! No more images available.</h2>
                     <button onclick="resetGame()">Play Again</button>
                 `;
-                document.getElementById("timer").textContent = ""; // Clear the timer if it's running
                 clearInterval(timer); // Stop the timer
             } else if (data.image_path) {
-                document.getElementById("map-image").src = data.image_path;
-                document.getElementById("map-image").dataset.id = data.id;
+                mapImage.src = data.image_path;
+                mapImage.dataset.id = data.id;
                 startTimer(); // Start the timer when a new image loads
             } else {
                 alert("An error occurred. Please try again.");
@@ -44,30 +80,28 @@ function loadImage() {
         });
 }
 
-// Function to start the timer
 function startTimer() {
-    timeLeft = maxTime; // Initialize timeLeft to maxTime for each new image
-    updateTimerDisplay(); // Display the initial time
-    setProgress(timeLeft); // Set initial ring progress
+    timeLeft = maxTime; // Reset time
 
-    // Clear any previous timer before starting a new one
-    clearInterval(timer);
+    clearInterval(timer); // Clear any existing timer interval
 
-    // Start a new interval timer
     timer = setInterval(() => {
         timeLeft -= 1;
+
         if (timeLeft >= 0) {
-            updateTimerDisplay(); // Update the display text
-            setProgress(timeLeft); // Update the circular progress
+            // Update the width of the progress bar
+            const progressPercentage = (timeLeft / maxTime) * 100;
+            progressBar.style.width = `${progressPercentage}%`;
+
         } else {
-            clearInterval(timer); // Stop the timer when time runs out
+            clearInterval(timer); // Stop the timer when it reaches 0
             submitGuess(); // Automatically submit if time runs out
         }
     }, 1000); // Update every second
 }
 
 function submitGuess() {
-    const mapId = document.getElementById("map-image").dataset.id;
+    const mapId = mapImage ? mapImage.dataset.id : null;
     const gameName = document.getElementById("game-name").value;
     const mapName = document.getElementById("map-name").value;
 
@@ -93,7 +127,7 @@ function submitGuess() {
         const feedback = document.getElementById("feedback");
         if (data.result === "correct") {
             feedback.textContent = `Correct! You scored ${score} points.`;
-            setTimeout(loadImage, 1000); // Automatically load a new image after 1 seconds
+            setTimeout(loadImage, 1000); // Automatically load a new image after 1 second
         } else if (data.result === "not_logged_in") {
             feedback.textContent = data.message;  // Display login prompt
         } else {
@@ -102,17 +136,12 @@ function submitGuess() {
     });
 }
 
-function resetGame() {
-    fetch("/reset_game", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        // Redirect to index.html
-        window.location.href = '/';
-    })
-    .catch(error => console.error("Error resetting game:", error));
-}
+// Initialize elements and load the first image when the DOM is fully loaded
+document.addEventListener("DOMContentLoaded", function() {
+    progressBar = document.getElementById('progress-bar');
+    mapImage = document.getElementById('map-image');
+
+    setTimeout(() => {
+        loadImage();
+    }, 100);
+});

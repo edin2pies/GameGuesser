@@ -43,5 +43,23 @@
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Select the flash messages container
+            const flashMessages = document.querySelector('.flash-messages');
+            
+            if (flashMessages) {
+                // Set a timeout to hide the flash messages after 2 seconds
+                setTimeout(() => {
+                    flashMessages.style.transition = 'opacity 0.5s ease';
+                    flashMessages.style.opacity = '0';
+                    
+                    // Remove the flash messages from the DOM after the fade-out
+                    setTimeout(() => flashMessages.remove(), 500); // Wait for fade-out before removing
+                }, 2000); // 2000 ms = 2 seconds
+            }
+        });
+    </script>
+
 </body>
 </html>

@@ -11,18 +11,13 @@
             <input type="text" id="game-name" placeholder="Guess the game name" />
             <input type="text" id="map-name" placeholder="Guess the map name" />
         </div>
-        <div class="timer">
-            <svg class="timer-circle" width="80" height="80" viewBox="0 0 100 100">
-                <circle cx="50" cy="50" r="45"></circle>
-                <circle cx="50" cy="50" r="45" class="progress-ring"></circle>
-            </svg>
-            <div class="time-display" id="time-display">01:33</div>
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
         </div>
         <div class="button-container">
             <button onclick="submitGuess()">Submit Guess</button>
             <button onclick="resetGame()">Reset Game</button>
         </div>
-        <p id="timer"></p>
         <p id="feedback"></p>
     </div>
 </div>
