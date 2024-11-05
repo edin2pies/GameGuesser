@@ -1,17 +1,19 @@
 :root {
-    --walnut-brown: #5f5449ff;
-    --rose-taupe: #9b6a6cff;
-    --rosy-brown: #b09398ff;
-    --azure-web: #cedfd9ff;
-    --azure-web-2: #ebfcfbff;
+    --black: #0a0908ff;
+    --gunmetal: #22333bff;
+    --white-smoke: #f2f4f3ff;
+    --hookers-green: #638475;
+    --jasper: #BF4E30;
+    --burnt-umber: #913B24;
 
-    /* Additional colors for text and buttons if needed */
-    --primary-text: var(--walnut-brown);
-    --secondary-text: var(--rose-taupe);
-    --button-background: var(--rose-taupe);
-    --button-hover: var(--walnut-brown);
-    --background-color: var(--azure-web-2);
-    --container-background: var(--azure-web);
+    /* Additional variables */
+    --background-color: var(--white-smoke);
+    --container-background: var(--hookers-green);
+    --primary-text: var(--black);
+    --secondary-text: var(--gunmetal);
+    --button-background: var(--gunmetal);
+    --button-hover: var(--black);
+    --accent-color: var(--jasper);
 }
 
 
@@ -25,7 +27,7 @@
 body {
     font-family: Arial, sans-serif;
     background-color: var(--background-color);
-    color: car(--primary-text);
+    color: var(--primary-text);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -43,6 +45,7 @@ body {
     width: 100%;
     padding: 20px;
     background: var(--container-background);
+    color: var(--white-smoke);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     margin-bottom: 20px;
@@ -50,7 +53,7 @@ body {
 
 /* Header styling */
 h1 {
-    color: var(--rose-taupe);
+    color: var(--accent-color);
     text-align: center;
     font-size: 2em;
     margin-bottom: 20px;
@@ -68,16 +71,16 @@ input[type="text"], input[type="password"] {
     width: 100%;
     padding: 10px;
     margin: 10px 0;
-    border: 1px solid var(--rosy-brown);
+    border: 1px solid var(--mountbatten-pink);
     border-radius: 4px;
     font-size: 1em;
-    background-color: var(--azure-web);
+    background-color: var(--white-smoke);
     color: var(--primary-text);
 }
 
 button {
-    background-color: var(--button-background);
-    color: white;
+    background-color: var(--jasper);
+    color: var(--white-smoke);
     padding: 10px 20px;
     font-size: 1em;
     border: none;
@@ -88,11 +91,21 @@ button {
 }
 
 button:hover {
-    background-color: var(--button-hover);
+    background-color: var(--burnt-umber);
+}
+
+.button-container {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.button-container button {
+    flex: 1;
 }
 
 nav {
-    background-color: var(--walnut-brown);
+    background-color: var(--black);
     padding: 10px;
     width: 100%;
     text-align: center;
@@ -101,7 +114,7 @@ nav {
 }
 
 nav a {
-    color: var(--azure-web-2);
+    color: var(--white-smoke);
     text-decoration: none;
     margin: 0 15px;
     font-weight: bold;
@@ -114,10 +127,10 @@ nav a:hover {
 /* Flash messages styling */
 .flash-messages {
     list-style-type: none;
-    color: var(--rose-taupe);
+    color: var(--primary-text);
     padding: 10px;
-    background-color: var(--rosy-brown);
-    border: 1px solid var(--rose-taupe);
+    background-color: var(--accent-color);
+    border: 1px solid var(--gunmetal);
     border-radius: 4px;
     margin-bottom: 20px;
 }
@@ -130,33 +143,63 @@ table {
 }
 
 table, th, td {
-    border: 1px solid var(--rose-taupe);
+    border: 1px solid var(--gunmetal);
 }
 
 th {
-    background-color: var(--walnut-brown);
+    background-color: var(--button-background);
     color: var(--azure-web-2);
 }
 
 td {
-    background-color: var(--container-background);
+    background-color: var(--background-color);
     color: var(--primary-text);
     padding: 12px;
     text-align: center;
 }
 
 tr:nth-child(even) {
-    background-color: var(--azure-web);
+    background-color: var(--container-background);
 }
 
-/* Specific style for reset button */
-#game button:last-of-type {
-    background-color: #ff6666;
-    color: white;
-    border: none;
-    cursor: pointer;
+.timer {
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 80px;
+    height: 80px;
 }
 
-#game button:last-of-type:hover {
-    background-color: #ff3333;
+.timer-circle {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: rotate(-90deg); /* Rotate to start from the top */
+}
+
+.timer-circle circle {
+    fill: none;
+    stroke-width: 8;
+}
+
+.timer-circle circle:first-child {
+    stroke: var(--black); /* Background ring color */
+}
+
+.progress-ring {
+    stroke: #9395D3; /* Countdown color (purple) */
+    stroke-dasharray: 283; /* Circumference of the circle (2 * PI * radius) */
+    stroke-dashoffset: 0; /* Full circle initially */
+    transition: stroke-dashoffset 1s linear;
+}
+
+.time-display {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #ffffff;
+    font-size: 1.2em;
+    font-weight: bold;
+    text-align: center;
 }

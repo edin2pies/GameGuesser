@@ -1,10 +1,26 @@
-let timer;
+const maxTime = 120; // 2 minutes (120 seconds)
 let timeLeft;
-let maxTime = 10;
 let basePoints = 100;
+const timerDisplay = document.getElementById('time-display');
+const progressRing = document.querySelector('.progress-ring');
+const circumference = 2 * Math.PI * 45; // Circle radius of 45
+progressRing.style.strokeDasharray = circumference;
 
 // Load a new image when the page loads
 document.addEventListener("DOMContentLoaded", loadImage);
+
+function updateTimerDisplay() {
+    // Format time as MM:SS
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+    timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+}
+
+function setProgress(value) {
+    // Calculate stroke-dashoffset based on remaining time
+    const offset = circumference - (value / maxTime) * circumference;
+    progressRing.style.strokeDashoffset = offset;
+}
 
 // Function to load a new random image
 function loadImage() {
@@ -31,7 +47,8 @@ function loadImage() {
 // Function to start the timer
 function startTimer() {
     timeLeft = maxTime; // Initialize timeLeft to maxTime for each new image
-    document.getElementById("timer").textContent = `Time left: ${timeLeft}s`;
+    updateTimerDisplay(); // Display the initial time
+    setProgress(timeLeft); // Set initial ring progress
 
     // Clear any previous timer before starting a new one
     clearInterval(timer);
@@ -40,7 +57,8 @@ function startTimer() {
     timer = setInterval(() => {
         timeLeft -= 1;
         if (timeLeft >= 0) {
-            document.getElementById("timer").textContent = `Time left: ${timeLeft}s`;
+            updateTimerDisplay(); // Update the display text
+            setProgress(timeLeft); // Update the circular progress
         } else {
             clearInterval(timer); // Stop the timer when time runs out
             submitGuess(); // Automatically submit if time runs out
@@ -75,7 +93,7 @@ function submitGuess() {
         const feedback = document.getElementById("feedback");
         if (data.result === "correct") {
             feedback.textContent = `Correct! You scored ${score} points.`;
-            setTimeout(loadImage, 2000); // Automatically load a new image after 2 seconds
+            setTimeout(loadImage, 1000); // Automatically load a new image after 1 seconds
         } else if (data.result === "not_logged_in") {
             feedback.textContent = data.message;  // Display login prompt
         } else {
