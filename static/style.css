@@ -76,11 +76,45 @@ h1 {
     margin-bottom: 20px;
 }
 
+.image-container {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    max-width: 500px;
+    height: 282px;
+}
+
 #map-image {
     width: 500px;
     height: 282px;
     border: 1px solid #ddd;
     margin-bottom: 20px;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    color: white;
+    font-size: 48px;
+    font-weight: bold;
+    visibility: hidden;
+}
+
+#start-button {
+    display: block;
+    margin: 10px auto;
+}
+
+.hidden {
+    display: none !important;
 }
 
 /* Form input styling */

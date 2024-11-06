@@ -3,16 +3,59 @@ const maxTime = 120; // 2 minutes (120 seconds)
 let timeLeft;
 let basePoints = 100;
 let timer; // Timer interval variable, accessible to all functions
-let progressBar, mapImage;
+let countdownTimer; // Countdown timer for start
+let countdownValue; // Current countdown value
 
-// Define the resetGame function in the global scope
-function resetGame() {
-    console.log("Reset Game function called");
+// Define functions to initialize elements and attach event listeners
+function initializeElements() {
+    // Reinitialize elements after page load
+    startButton = document.getElementById("start-button");
+    overlay = document.getElementById("overlay");
+    countdown = document.getElementById("countdown");
+    progressBar = document.getElementById("progress-bar");
+    mapImage = document.getElementById("map-image");
 
-    clearInterval(timer); // Stop the timer
-    timeLeft = maxTime; // Reset the time left to maximum
-    progressBar.style.width = '100%'; // Reset the progress bar to full width
+    // Attach start game functionality
+    if (startButton) {
+        startButton.onclick = startGame;
+    }
 
+    // Attach reset functionality to window object for dynamic elements
+    window.resetGame = resetGame;
+}
+
+// Function to start the game with countdown
+function startGame() {
+    console.log("Start game function called");
+
+    // Hide the Start button and show the overlay with countdown
+    startButton.classList.add("hidden");
+    overlay.style.visibility = "visible";
+    countdownValue = 3; // Start countdown from 3
+    countdown.textContent = countdownValue;
+
+    // Begin countdown
+    countdownTimer = setInterval(() => {
+        countdownValue -= 1;
+        countdown.textContent = countdownValue;
+
+        if (countdownValue <= 0) {
+            clearInterval(countdownTimer); // Stop the countdown timer
+            overlay.style.visibility = "hidden"; // Hide the overlay
+            loadImage(); // Load the first image and start the game
+        }
+    }, 1000); // Countdown interval is 1 second
+}
+
+// Function to start a new game and redirect
+function startNewGame() {
+    console.log("Starting a new game...");
+
+    // Clear any active game or countdown timers
+    clearInterval(timer);
+    clearInterval(countdownTimer);
+
+    // Send a request to reset the game on the server side
     fetch("/reset_game", {
         method: "POST",
         headers: {
@@ -21,55 +64,54 @@ function resetGame() {
     })
     .then(response => response.json())
     .then(data => {
-        console.log("Reset response:", data); // Log response to verify
+        console.log("Game reset on server:", data);
 
-        // Clear any "Game Over" messages and prepare for a new game
-        const gameContainer = document.getElementById("game");
-        gameContainer.innerHTML = `
-            <img id="map-image" src="" alt="Map" style="max-width:100%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);" />
-            <div>
-                <input type="text" id="game-name" placeholder="Guess the game name" />
-                <input type="text" id="map-name" placeholder="Guess the map name" />
-            </div>
-            <div class="progress-container">
-                <div class="progress-bar" id="progress-bar" style="width: 100%;"></div>
-            </div>
-            <div class="button-container">
-                <button onclick="submitGuess()">Submit Guess</button>
-                <button onclick="resetGame()">Reset Game</button>
-            </div>
-            <p id="feedback"></p>
-        `;
+        // Redirect to the home page to start a fresh game
+        window.location.href = "/";
+    })
+    .catch(error => console.error("Error starting new game:", error));
+}
 
-        // Reinitialize DOM elements
-        mapImage = document.getElementById("map-image");
-        progressBar = document.getElementById("progress-bar");
+// Function to reset the game without reloading the page
+function resetGame() {
+    console.log("Reset Game function called");
 
-        // Load the first image for the new game
-        loadImage();
+    // Clear any active timers
+    clearInterval(timer);
+    clearInterval(countdownTimer);
+
+    // Reset countdown and show the overlay
+    overlay.style.visibility = "visible";
+    countdownValue = 3;
+    countdown.textContent = countdownValue;
+    startButton.classList.remove("hidden"); // Show Start button for new game
+
+    // Send a request to reset the game on the server side
+    fetch("/reset_game", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("Reset response:", data);
+        progressBar.style.width = '100%'; // Reset progress bar
+        startGame(); // Automatically start the game with a new countdown
     })
     .catch(error => console.error("Error resetting game:", error));
 }
 
-// Attach resetGame to the global window object
-window.resetGame = resetGame;
-
-// Define loadImage, startTimer, and submitGuess in the global scope
+// Function to load the first image when game starts
 function loadImage() {
-    if (!mapImage) {
-        console.error("Element with ID 'map-image' not found.");
-        return;
-    }
-
     fetch("/get_image")
         .then(response => response.json())
         .then(data => {
             if (data.game_over) {
                 document.getElementById("game").innerHTML = `
                     <h2>Game Over! No more images available.</h2>
-                    <button onclick="resetGame()">Play Again</button>
+                    <button onclick="startNewGame()">Play Again</button>
                 `;
-                clearInterval(timer); // Stop the timer
             } else if (data.image_path) {
                 mapImage.src = data.image_path;
                 mapImage.dataset.id = data.id;
@@ -80,24 +122,21 @@ function loadImage() {
         });
 }
 
+// Timer function for the game
 function startTimer() {
-    timeLeft = maxTime; // Reset time
-
+    timeLeft = maxTime;
     clearInterval(timer); // Clear any existing timer interval
 
     timer = setInterval(() => {
         timeLeft -= 1;
+        const progressPercentage = (timeLeft / maxTime) * 100;
+        progressBar.style.width = `${progressPercentage}%`;
 
-        if (timeLeft >= 0) {
-            // Update the width of the progress bar
-            const progressPercentage = (timeLeft / maxTime) * 100;
-            progressBar.style.width = `${progressPercentage}%`;
-
-        } else {
-            clearInterval(timer); // Stop the timer when it reaches 0
+        if (timeLeft <= 0) {
+            clearInterval(timer);
             submitGuess(); // Automatically submit if time runs out
         }
-    }, 1000); // Update every second
+    }, 1000);
 }
 
 function submitGuess() {
@@ -107,7 +146,6 @@ function submitGuess() {
 
     clearInterval(timer); // Stop the timer when the user submits
 
-    // Calculate score based on remaining time
     const score = Math.floor(basePoints * (timeLeft / maxTime));
 
     fetch("/submit_answer", {
@@ -127,9 +165,9 @@ function submitGuess() {
         const feedback = document.getElementById("feedback");
         if (data.result === "correct") {
             feedback.textContent = `Correct! You scored ${score} points.`;
-            setTimeout(loadImage, 1000); // Automatically load a new image after 1 second
+            setTimeout(loadImage, 1000); // Load a new image after 1 second
         } else if (data.result === "not_logged_in") {
-            feedback.textContent = data.message;  // Display login prompt
+            feedback.textContent = data.message;
         } else {
             feedback.textContent = "Incorrect. Try again!";
         }
@@ -138,9 +176,9 @@ function submitGuess() {
 
 // Initialize elements and load the first image when the DOM is fully loaded
 document.addEventListener("DOMContentLoaded", function() {
-    progressBar = document.getElementById('progress-bar');
-    mapImage = document.getElementById('map-image');
+    initializeElements();
 
+    // Optionally load the first image if needed
     setTimeout(() => {
         loadImage();
     }, 100);

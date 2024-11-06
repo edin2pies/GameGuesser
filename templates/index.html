@@ -6,7 +6,15 @@
 <div class="container">
     <h1>Game GeoGuesser</h1>
     <div id="game">
-        <img id="map-image" src="" alt="Map" style="max-width:100%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);" />
+        <div class="image-container">
+            <img id="map-image" src="" alt="Map" style="max-width:100%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);" />
+            <div id="overlay" class="overlay">
+                <span id="countdown" class="countdown">3</span>
+            </div>
+        </div>
+
+        <button id="start-button" onclick="startGame()">Start Game</button>
+
         <div>
             <input type="text" id="game-name" placeholder="Guess the game name" />
             <input type="text" id="map-name" placeholder="Guess the map name" />
