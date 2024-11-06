@@ -77,8 +77,8 @@ h1 {
 }
 
 #map-image {
-    width: 100%;
-    height: auto;
+    width: 500px;
+    height: 282px;
     border: 1px solid #ddd;
     margin-bottom: 20px;
 }
