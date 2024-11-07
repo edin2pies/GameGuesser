@@ -1,3 +1,15 @@
+document.addEventListener("DOMContentLoaded", function() {
+    initializeElements();
+
+    if (mapImage) {
+        setTimeout(() => {
+            loadImage();
+        }, 100);
+    } else {
+        console.log("mapImage not found on this page; skipping image loading.");
+    }
+});
+
 // Global variables
 const maxTime = 30; // 30 seconds
 let timeLeft;
@@ -14,6 +26,10 @@ function initializeElements() {
     countdown = document.getElementById("countdown");
     progressBar = document.getElementById("progress-bar");
     mapImage = document.getElementById("map-image");
+
+    if (!mapImage) {
+        console.error("mapImage element not found in the DOM during initialization.");
+    }
 
     // Attach start game functionality
     if (startButton) {
@@ -104,16 +120,26 @@ function resetGame() {
 
 // Function to load the first image when game starts
 function loadImage() {
+    if (!mapImage) {
+        console.error("mapImage element not found in the DOM");
+        return;
+    }
+
     fetch("/get_image")
         .then(response => response.json())
         .then(data => {
             if (data.game_over) {
-                document.getElementById("game").innerHTML = `
+                // Create and display game-over message
+                const gameOverMessage = document.createElement("div");
+                gameOverMessage.innerHTML = `
                     <h2>Game Over! No more images available.</h2>
                     <button onclick="startNewGame()">Play Again</button>
                 `;
+                const gameContainer = document.getElementById("game");
+                gameContainer.innerHTML = ""; // Clear #game content
+                gameContainer.appendChild(gameOverMessage); // Append new message
             } else if (data.image_path) {
-                mapImage.src = data.image_path;
+                mapImage.src = data.image_path;  // <-- This line should now work
                 mapImage.dataset.id = data.id;
                 startTimer(); // Start the timer when a new image loads
             } else {

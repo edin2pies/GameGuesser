@@ -13,6 +13,23 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY')
 
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+@app.route('/start_game', methods=['POST'])
+def start_game():
+    # Retrieve selected options from the form
+    selected_game = request.form.get('game')
+    selected_difficulty = request.form.get('difficulty')
+    
+    # Store the selected options in session or pass to template
+    session['selected_game'] = selected_game
+    session['selected_difficulty'] = selected_difficulty
+
+    # Redirect to the guessing game page with the options
+    return redirect(url_for('guessing_game'))
+
 def create_connection():
     return mysql.connector.connect(
         host=os.getenv('DATABASE_HOST', 'localhost'),  # Use 'localhost' if not specified
@@ -20,6 +37,14 @@ def create_connection():
         password=os.getenv('DATABASE_PASSWORD'),
         database=os.getenv('DATABASE_NAME')
     )
+
+@app.route('/guessing_game')
+def guessing_game():
+    # Pass selected options from session to guessing game template
+    selected_game = session.get('selected_game', 'Unknown Game')
+    selected_difficulty = session.get('selected_difficulty', 'Unknown Difficulty')
+    
+    return render_template('guessing_game.html', selected_game=selected_game, selected_difficulty=selected_difficulty)
 
 # User registration route
 @app.route('/register', methods=['GET', 'POST'])
@@ -63,7 +88,7 @@ def login():
             session['user_id'] = user[0]
             session['username'] = username
             flash("Login successful!")
-            return redirect(url_for('index'))
+            return redirect(url_for('home'))
         else:
             flash("Invalid credentials. Please try again.")
             return redirect(url_for('login'))
@@ -74,7 +99,7 @@ def login():
 def logout():
     session.clear()
     flash("You have been logged out.")
-    return redirect(url_for('index'))
+    return redirect(url_for('home'))
 
 # Function to get a random map from the database
 def get_random_map():
@@ -91,11 +116,6 @@ def get_random_map():
 @app.route('/images/<path:filename>')
 def images(filename):
     return send_from_directory('images', filename)
-
-# Route to serve the main page
-@app.route('/')
-def index():
-    return render_template('index.html')
 
 # Route to get a random image
 @app.route('/get_image', methods=['GET'])

@@ -1,32 +1,30 @@
 {% extends "base.html" %}
 
-{% block title %}Game GeoGuesser{% endblock %}
+{% block title %}Welcome to Game Guesser{% endblock %}
 
 {% block content %}
 <div class="container">
-    <h1>Game GeoGuesser</h1>
-    <div id="game">
-        <div class="image-container">
-            <img id="map-image" src="" alt="Map" style="max-width:100%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);" />
-            <div id="overlay" class="overlay">
-                <span id="countdown" class="countdown">3</span>
-            </div>
+    <h1>Welcome to Game Guesser!</h1>
+    <form action="{{ url_for('start_game') }}" method="POST">
+        <div class="option-group">
+            <label for="game">Choose a Game:</label>
+            <select id="game" name="game" required>
+                <option value="game1">Game 1</option>
+                <option value="game2">Game 2</option>
+                <option value="game3">Game 3</option>
+            </select>
+        </div>
+        
+        <div class="option-group">
+            <label for="difficulty">Select Difficulty:</label>
+            <select id="difficulty" name="difficulty" required>
+                <option value="easy">Easy</option>
+                <option value="medium">Medium</option>
+                <option value="hard">Hard</option>
+            </select>
         </div>
 
-        <button id="start-button" onclick="startGame()">Start Game</button>
-
-        <div>
-            <input type="text" id="game-name" placeholder="Guess the game name" />
-            <input type="text" id="map-name" placeholder="Guess the map name" />
-        </div>
-        <div class="progress-container">
-            <div class="progress-bar" id="progress-bar"></div>
-        </div>
-        <div class="button-container">
-            <button onclick="submitGuess()">Submit Guess</button>
-            <button onclick="resetGame()">Reset Game</button>
-        </div>
-        <p id="feedback"></p>
-    </div>
+        <button type="submit">Start Game</button>
+    </form>
 </div>
 {% endblock %}
