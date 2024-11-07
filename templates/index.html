@@ -4,27 +4,21 @@
 
 {% block content %}
 <div class="container">
-    <h1>Welcome to Game Guesser!</h1>
-    <form action="{{ url_for('start_game') }}" method="POST">
-        <div class="option-group">
-            <label for="game">Choose a Game:</label>
-            <select id="game" name="game" required>
-                <option value="game1">Game 1</option>
-                <option value="game2">Game 2</option>
-                <option value="game3">Game 3</option>
-            </select>
-        </div>
-        
-        <div class="option-group">
-            <label for="difficulty">Select Difficulty:</label>
-            <select id="difficulty" name="difficulty" required>
-                <option value="easy">Easy</option>
-                <option value="medium">Medium</option>
-                <option value="hard">Hard</option>
-            </select>
-        </div>
-
-        <button type="submit">Start Game</button>
-    </form>
+    <h1>Choose Your Game</h1>
+    <div class="game-grid">
+        <!-- Replace with actual game logo images and values -->
+        <form action="{{ url_for('start_game') }}" method="POST">
+            <button type="submit" name="game" value="game1" class="game-button">
+                <img src="{{ url_for('static', filename='images/logos/halo2.png') }}" alt="Game 1" />
+            </button>
+            <button type="submit" name="game" value="game2" class="game-button">
+                <img src="{{ url_for('static', filename='images/logos/mw2.png') }}" alt="Game 2" />
+            </button>
+            <button type="submit" name="game" value="game3" class="game-button">
+                <img src="{{ url_for('static', filename='images/game3_logo.png') }}" alt="Game 3" />
+            </button>
+            <!-- Add more games as needed -->
+        </form>
+    </div>
 </div>
 {% endblock %}

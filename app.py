@@ -21,11 +21,9 @@ def home():
 def start_game():
     # Retrieve selected options from the form
     selected_game = request.form.get('game')
-    selected_difficulty = request.form.get('difficulty')
     
     # Store the selected options in session or pass to template
     session['selected_game'] = selected_game
-    session['selected_difficulty'] = selected_difficulty
 
     # Redirect to the guessing game page with the options
     return redirect(url_for('guessing_game'))

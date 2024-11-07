@@ -39,6 +39,32 @@ body {
     max-width: 500px;
 }
 
+.game-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    justify-items: center;
+}
+
+.game-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.game-button img {
+    width: 100px; /* Adjust as needed */
+    height: 100px;
+    object-fit: contain;
+    transition: transform 0.2s ease;
+}
+
+.game-button:hover img {
+    transform: scale(1.1);
+}
+
 /* Container for centering content */
 .container {
     max-width: 800px;

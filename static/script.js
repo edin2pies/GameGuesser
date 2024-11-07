@@ -100,7 +100,18 @@ function resetGame() {
     overlay.style.visibility = "visible";
     countdownValue = 3;
     countdown.textContent = countdownValue;
-    startButton.classList.remove("hidden"); // Show Start button for new game
+
+    // Start the countdown directly when reset is clicked
+    countdownTimer = setInterval(() => {
+        countdownValue -= 1;
+        countdown.textContent = countdownValue;
+
+        if (countdownValue <= 0) {
+            clearInterval(countdownTimer); // Stop countdown timer
+            overlay.style.visibility = "hidden"; // Hide overlay
+            loadImage(); // Load the first image and start the game
+        }
+    }, 1000);
 
     // Send a request to reset the game on the server side
     fetch("/reset_game", {
@@ -113,7 +124,6 @@ function resetGame() {
     .then(data => {
         console.log("Reset response:", data);
         progressBar.style.width = '100%'; // Reset progress bar
-        startGame(); // Automatically start the game with a new countdown
     })
     .catch(error => console.error("Error resetting game:", error));
 }
