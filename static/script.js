@@ -1,5 +1,5 @@
 // Global variables
-const maxTime = 120; // 2 minutes (120 seconds)
+const maxTime = 30; // 30 seconds
 let timeLeft;
 let basePoints = 100;
 let timer; // Timer interval variable, accessible to all functions
